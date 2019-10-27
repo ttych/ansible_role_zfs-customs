@@ -1,0 +1,42 @@
+---
+parent_mountpoint: /services
+
+root_pool: false
+
+sub_datasets:
+  - name: svscan
+    properties:
+      setuid: off
+      compression: "lz4"
+      sharenfs: off
+      sharesmb: off
+    owner: root
+    group: root
+    mode: '0755'
+  - name: dhcpd
+    properties:
+      setuid: off
+      compression: "lz4"
+      sharenfs: off
+      sharesmb: off
+    owner: root
+    group: root
+    mode: '0755'
+  - name: named
+    properties:
+      setuid: off
+      compression: "lz4"
+      sharenfs: off
+      sharesmb: off
+    owner: root
+    group: root
+    mode: '0755'
+  - name: clamav
+    properties:
+      setuid: off
+      compression: "lz4"
+      sharenfs: off
+      sharesmb: off
+    owner: root
+    group: root
+    mode: '0755'

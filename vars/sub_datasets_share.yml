@@ -1,6 +1,8 @@
 ---
 parent_mountpoint: /share
 
+root_pool: false
+
 sub_datasets:
   - name: computer_sciences
     properties:

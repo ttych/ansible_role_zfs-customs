@@ -6,3 +6,4 @@ zpools:
 sub_datasets:
   - share
   - root
+  - services
