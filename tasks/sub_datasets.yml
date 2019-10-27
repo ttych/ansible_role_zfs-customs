@@ -1,0 +1,59 @@
+---
+- name: "include sub_datasets vars from {{ from }}"
+  include_vars:
+    file: "sub_datasets_{{ from }}.yml"
+
+- name: "get associated dataset for {{ parent_mountpoint }}"
+  shell: zfs list | grep '\s{{ parent_mountpoint }}$' | cut -d ' ' -f1
+  register: parent_dataset
+  changed_when: False
+
+- name: "get root dataset"
+  shell: echo "{{ parent_dataset.stdout }}" | cut -d/ -f1
+  register: root_dataset
+  changed_when: False
+  when: root_pool is defined and root_pool and parent_dataset.stdout != ""
+
+- set_fact:
+    ref_dataset: "{{ root_dataset.stdout | default(parent_dataset.stdout) }}"
+  when: parent_dataset.stdout != ""
+
+- block:
+
+    # - name: set share zfs properties
+    #   zfs:
+    #     name: "{{ ref_dataset }}"
+    #     state: present
+    #     extra_zfs_properties:
+    #       setuid: off
+    #       compression: "lz4"
+    #       sharenfs: off
+    #       sharesmb: off
+
+    # - name: set share directory attributes
+    #   file:
+    #     path: "{{ parent_mountpoint }}"
+    #     owner: root
+    #     group: share
+    #     mode: '0555'
+
+    - name: create share datasets
+      zfs:
+        name: "{{ ref_dataset }}/{{ dataset.name }}"
+        state: present
+        extra_zfs_properties: "{{ dataset.properties }}"
+      with_items: "{{ sub_datasets }}"
+      loop_control:
+        loop_var: dataset
+
+    - name: set share datasets rights
+      file:
+        path: "{{ parent_mountpoint }}/{{ dataset.name }}"
+        owner: "{{ dataset.owner }}"
+        group: "{{ dataset.group }}"
+        mode: "{{ dataset.mode }}"
+      with_items: "{{ sub_datasets }}"
+      loop_control:
+        loop_var: dataset
+
+  when: parent_dataset.stdout != ""

@@ -1,0 +1,8 @@
+---
+zpools:
+  - zdata
+  - zhome
+
+sub_datasets:
+  - share
+  - root

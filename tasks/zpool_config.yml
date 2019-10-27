@@ -1,0 +1,47 @@
+---
+- name: "check if {{ zpool }} exists"
+  shell: "zfs list {{ zpool }}"
+  register: zpool_status
+  changed_when: False
+  ignore_errors: yes
+
+- block:
+    - name: "load {{ zpool }} config"
+      include_vars:
+        file: "{{ zpool }}.yml"
+
+    # - fail: msg="variables for {{ zpool }} are required"
+    #   when: ... is not defined
+
+    - name: "set {{ zpool }} pool properties"
+      zfs:
+        name: "{{ zpool }}"
+        state: present
+        extra_zfs_properties: "{{ zpool_properties }}"
+
+    - name: "create {{ zpool }} datasets"
+      zfs:
+        name: "{{ zpool }}/{{ dataset.name }}"
+        state: present
+        extra_zfs_properties: "{{ dataset.properties }}"
+      with_items: "{{ datasets }}"
+      loop_control:
+        loop_var: dataset
+
+    - name: "set {{ zpool }} datasets permissions"
+      file:
+        path: "{{ dataset.properties.mountpoint }}"
+        owner: "{{ dataset.owner }}"
+        group: "{{ dataset.group }}"
+        mode: "{{ dataset.mode }}"
+      with_items: "{{ datasets }}"
+      loop_control:
+        loop_var: dataset
+      when: dataset.properties.mountpoint is defined
+
+  when: zpool_status.rc == 0
+
+
+
+
+

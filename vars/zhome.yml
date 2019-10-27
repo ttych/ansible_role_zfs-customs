@@ -1,0 +1,18 @@
+---
+zpool_properties:
+  atime: off
+  compression: 'lz4'
+  mountpoint: 'legacy'
+  sharenfs: off
+  sharesmb: off
+
+datasets:
+  - name: home
+    owner: root
+    group: root
+    mode: '0755'
+    properties:
+      compression: 'lz4'
+      mountpoint: '/home'
+      sharenfs: off
+      sharesmb: off
