@@ -4,7 +4,7 @@ parent_mountpoint: /services
 root_pool: false
 
 sub_datasets:
-  - name: svscan
+  - name: daemontools
     properties:
       setuid: off
       compression: "lz4"
