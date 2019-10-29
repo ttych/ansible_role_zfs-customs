@@ -8,7 +8,7 @@
   register: parent_dataset
   changed_when: False
 
-- name: "get root dataset"
+- name: "get root dataset for {{ parent_dataset }}"
   shell: echo "{{ parent_dataset.stdout }}" | cut -d/ -f1
   register: root_dataset
   changed_when: False
@@ -37,7 +37,7 @@
     #     group: share
     #     mode: '0555'
 
-    - name: create share datasets
+    - name: "create {{ ref_dataset }} sub-datasets"
       zfs:
         name: "{{ ref_dataset }}/{{ dataset.name }}"
         state: present
@@ -46,7 +46,7 @@
       loop_control:
         loop_var: dataset
 
-    - name: set share datasets rights
+    - name: "set {{ ref_dataset }} sub-datasets permissions"
       file:
         path: "{{ parent_mountpoint }}/{{ dataset.name }}"
         owner: "{{ dataset.owner }}"
