@@ -11,5 +11,5 @@ sub_datasets:
       sharesmb: off
       mountpoint: /services
     owner: root
-    group: root
+    group: 0
     mode: '0755'

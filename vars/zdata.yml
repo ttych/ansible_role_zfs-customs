@@ -9,7 +9,7 @@ zpool_properties:
 datasets:
   - name: data
     owner: root
-    group: root
+    group: 0
     mode: '0555'
     properties:
       compression: 'lz4'
@@ -18,7 +18,7 @@ datasets:
       sharesmb: off
   - name: homes
     owner: root
-    group: root
+    group: 0
     mode: '0555'
     properties:
       compression: 'lz4'
@@ -28,7 +28,7 @@ datasets:
       setuid: off
   - name: share
     owner: root
-    group: share
+    group: 0
     mode: '0555'
     properties:
       compression: 'lz4'

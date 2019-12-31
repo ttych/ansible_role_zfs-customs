@@ -4,7 +4,7 @@
     file: "sub_datasets_{{ from }}.yml"
 
 - name: "get associated dataset for {{ parent_mountpoint }}"
-  shell: zfs list | grep '\s{{ parent_mountpoint }}$' | cut -d ' ' -f1
+  shell: zfs list | egrep '[[:blank:]]{{ parent_mountpoint }}$' | cut -d ' ' -f1
   register: parent_dataset
   changed_when: False
 

@@ -11,7 +11,7 @@ sub_datasets:
       sharenfs: off
       sharesmb: off
     owner: root
-    group: root
+    group: 0
     mode: '0755'
   - name: dhcpd
     properties:
@@ -20,7 +20,7 @@ sub_datasets:
       sharenfs: off
       sharesmb: off
     owner: root
-    group: root
+    group: 0
     mode: '0755'
   - name: named
     properties:
@@ -29,7 +29,7 @@ sub_datasets:
       sharenfs: off
       sharesmb: off
     owner: root
-    group: root
+    group: 0
     mode: '0755'
   - name: clamav
     properties:
@@ -38,5 +38,5 @@ sub_datasets:
       sharenfs: off
       sharesmb: off
     owner: root
-    group: root
+    group: 0
     mode: '0755'
