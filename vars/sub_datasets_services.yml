@@ -13,6 +13,15 @@ sub_datasets:
     owner: root
     group: 0
     mode: '0755'
+  - name: svscan
+    properties:
+      setuid: off
+      compression: "lz4"
+      sharenfs: off
+      sharesmb: off
+    owner: root
+    group: 0
+    mode: '0755'
   - name: dhcpd
     properties:
       setuid: off
@@ -40,3 +49,21 @@ sub_datasets:
     owner: root
     group: 0
     mode: '0755'
+  - name: sshguard
+    properties:
+      setuid: off
+      compression: "lz4"
+      sharenfs: off
+      sharesmb: off
+    owner: root
+    group: 0
+    mode: '0750'
+  - name: knockd
+    properties:
+      setuid: off
+      compression: "lz4"
+      sharenfs: off
+      sharesmb: off
+    owner: root
+    group: 0
+    mode: '0750'
