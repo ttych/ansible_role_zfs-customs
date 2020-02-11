@@ -75,4 +75,4 @@ sub_datasets:
       sharesmb: off
     owner: root
     group: 0
-    mode: '0750'
+    mode: '0755'
