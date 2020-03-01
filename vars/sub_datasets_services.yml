@@ -103,3 +103,10 @@ sub_datasets:
     owner: root
     group: 0
     mode: '0755'
+  - name: easy-rsa
+    properties:
+      setuid: off
+      compression: "lz4"
+      sharenfs: off
+      sharesmb: off
+    mode: '0700'

@@ -49,8 +49,8 @@
     - name: "set {{ ref_dataset }} sub-datasets permissions"
       file:
         path: "{{ parent_mountpoint }}/{{ dataset.name }}"
-        owner: "{{ dataset.owner }}"
-        group: "{{ dataset.group }}"
+        owner: "{{ dataset.owner | d(omit) }}"
+        group: "{{ dataset.group | d(omit) }}"
         mode: "{{ dataset.mode }}"
       with_items: "{{ sub_datasets }}"
       loop_control:
