@@ -109,4 +109,6 @@ sub_datasets:
       compression: "lz4"
       sharenfs: off
       sharesmb: off
+    owner: root
+    group: 0
     mode: '0700'
