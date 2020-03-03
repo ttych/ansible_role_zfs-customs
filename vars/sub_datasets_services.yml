@@ -103,6 +103,15 @@ sub_datasets:
     owner: root
     group: 0
     mode: '0755'
+  - name: gitlab
+    properties:
+      setuid: off
+      compression: "lz4"
+      sharenfs: off
+      sharesmb: off
+    owner: root
+    group: 0
+    mode: '0755'
   - name: easy-rsa
     properties:
       setuid: off
