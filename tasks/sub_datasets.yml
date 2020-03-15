@@ -14,46 +14,13 @@
   changed_when: False
   when: root_pool is defined and root_pool and parent_dataset.stdout != ""
 
-- set_fact:
-    ref_dataset: "{{ root_dataset.stdout | default(parent_dataset.stdout) }}"
-  when: parent_dataset.stdout != ""
-
 - block:
+    - set_fact:
+        ref_dataset: "{{ root_dataset.stdout | default(parent_dataset.stdout) }}"
 
-    # - name: set share zfs properties
-    #   zfs:
-    #     name: "{{ ref_dataset }}"
-    #     state: present
-    #     extra_zfs_properties:
-    #       setuid: off
-    #       compression: "lz4"
-    #       sharenfs: off
-    #       sharesmb: off
-
-    # - name: set share directory attributes
-    #   file:
-    #     path: "{{ parent_mountpoint }}"
-    #     owner: root
-    #     group: share
-    #     mode: '0555'
-
-    - name: "create {{ ref_dataset }} sub-datasets"
-      zfs:
-        name: "{{ ref_dataset }}/{{ dataset.name }}"
-        state: present
-        extra_zfs_properties: "{{ dataset.properties }}"
-      with_items: "{{ sub_datasets }}"
+    - include: dataset.yml dataset_parent="{{ ref_dataset }}" dataset="{{ dataset_i }}"
+      loop: "{{ sub_datasets }}"
       loop_control:
-        loop_var: dataset
-
-    - name: "set {{ ref_dataset }} sub-datasets permissions"
-      file:
-        path: "{{ parent_mountpoint }}/{{ dataset.name }}"
-        owner: "{{ dataset.owner | d(omit) }}"
-        group: "{{ dataset.group | d(omit) }}"
-        mode: "{{ dataset.mode }}"
-      with_items: "{{ sub_datasets }}"
-      loop_control:
-        loop_var: dataset
+        loop_var: dataset_i
 
   when: parent_dataset.stdout != ""

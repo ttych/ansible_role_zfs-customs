@@ -1,6 +1,6 @@
 ---
 - include: zpool_config.yml zpool="{{ item }}"
-  with_items: "{{ zpools }}"
+  loop: "{{ zpools }}"
 
 - include: sub_datasets.yml from="{{ item }}"
-  with_items: "{{ sub_datasets }}"
+  loop: "{{ sub_datasets }}"

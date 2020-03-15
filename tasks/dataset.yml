@@ -1,0 +1,64 @@
+---
+
+# variables :
+# - dataset_parent
+# - dataset
+
+- block:
+    - name: "check {{ dataset.properties.mountpoint }} usage"
+      stat:
+        path: "{{ dataset.properties.mountpoint }}"
+      when: dataset.properties.mountpoint is defined
+      register: t_dataset_mountpoint
+
+    - name: "get device associated to {{ dataset.properties.mountpoint }}"
+      shell: "mount | grep -w 'on {{ dataset.properties.mountpoint }}' | cut -d ' ' -f1"
+      changed_when: no
+      register: t_dataset_device
+      when: not (t_dataset_mountpoint.skipped|d(false)) and t_dataset_mountpoint.stat.exists
+
+    # - debug:
+    #     msg: "{{ t_dataset_mountpoint }}"
+    # - debug:
+    #     msg: "{{ t_dataset_device }}"
+
+    - block:
+        - name: "create {{ dataset_parent }}/{{ dataset.name }}"
+          zfs:
+            name: "{{ dataset_parent }}/{{ dataset.name }}"
+            state: present
+            extra_zfs_properties: "{{ dataset.properties }}"
+
+        - name: "set defined mountpoint permissions"
+          file:
+            path: "{{ dataset.properties.mountpoint }}"
+            owner: "{{ dataset.owner | d(omit) }}"
+            group: "{{ dataset.group | d(omit) }}"
+            mode: "{{ dataset.mode | d(omit) }}"
+          when: dataset.properties.mountpoint is defined
+
+        - block:
+            - name: "get parent mountpoint"
+              command: "zfs get -Ho value mountpoint {{ dataset_parent }}"
+              changed_when: false
+              failed_when: false
+              register: t_dataset_parent_mountpoint
+
+            - name: "set inherited mountpoint permissions"
+              file:
+                path: "{{ t_dataset_parent_mountpoint.stdout }}/{{ dataset.name }}"
+                owner: "{{ dataset.owner | d(omit) }}"
+                group: "{{ dataset.group | d(omit) }}"
+                mode: "{{ dataset.mode | d(omit) }}"
+              when:
+                - t_dataset_parent_mountpoint.rc == 0
+                - t_dataset_parent_mountpoint.stdout | regex_search('^/')
+
+          when: dataset.properties.mountpoint is not defined
+
+      when:
+        (t_dataset_mountpoint.skipped|d(false))
+        or (not t_dataset_mountpoint.stat.exists)
+        or (t_dataset_device.stdout == (dataset_parent + "/" + dataset.name))
+
+  when: dataset_parent is defined and dataset is defined
