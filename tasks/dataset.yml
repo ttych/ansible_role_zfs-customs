@@ -5,22 +5,42 @@
 # - dataset
 
 - block:
-    - name: "check {{ dataset.properties.mountpoint }} usage"
-      stat:
-        path: "{{ dataset.properties.mountpoint }}"
+    - name: reset t_dataset_mountpoint
+      set_fact:
+        t_dataset_mountpoint: ""
+
+    - name: set mountpoint from defined mountpoint
+      set_fact:
+        t_dataset_mountpoint: "{{ dataset.properties.mountpoint }}"
       when: dataset.properties.mountpoint is defined
-      register: t_dataset_mountpoint
 
-    - name: "get device associated to {{ dataset.properties.mountpoint }}"
-      shell: "mount | grep -w 'on {{ dataset.properties.mountpoint }}' | cut -d ' ' -f1"
+    - block:
+        - name: "get parent mountpoint"
+          command: "zfs get -Ho value mountpoint {{ dataset_parent }}"
+          changed_when: false
+          failed_when: false
+          register: t_dataset_parent_mountpoint
+
+        - name: set mountpoint by inheritance
+          set_fact:
+            t_dataset_mountpoint: "{{ t_dataset_parent_mountpoint.stdout }}/{{ dataset.name }}"
+          when:
+            - t_dataset_parent_mountpoint.rc == 0
+            - t_dataset_parent_mountpoint.stdout | regex_search('^/')
+
+      when: dataset.properties.mountpoint is not defined
+
+    - name: "check {{ t_dataset_mountpoint }} mountpoint usage"
+      stat:
+        path: "{{ t_dataset_mountpoint }}"
+      when: t_dataset_mountpoint != ""
+      register: t_dataset_mountpoint_stat
+
+    - name: "get device associated to {{ t_dataset_mountpoint }} mountpoint"
+      shell: "mount | grep -w 'on {{ t_dataset_mountpoint }}' | cut -d ' ' -f1"
       changed_when: no
-      register: t_dataset_device
-      when: not (t_dataset_mountpoint.skipped|d(false)) and t_dataset_mountpoint.stat.exists
-
-    # - debug:
-    #     msg: "{{ t_dataset_mountpoint }}"
-    # - debug:
-    #     msg: "{{ t_dataset_device }}"
+      register: t_dataset_current_device
+      when: not (t_dataset_mountpoint_stat.skipped|d(false)) and t_dataset_mountpoint_stat.stat.exists
 
     - block:
         - name: "create {{ dataset_parent }}/{{ dataset.name }}"
@@ -31,34 +51,15 @@
 
         - name: "set defined mountpoint permissions"
           file:
-            path: "{{ dataset.properties.mountpoint }}"
+            path: "{{ t_dataset_mountpoint }}"
             owner: "{{ dataset.owner | d(omit) }}"
             group: "{{ dataset.group | d(omit) }}"
             mode: "{{ dataset.mode | d(omit) }}"
-          when: dataset.properties.mountpoint is defined
-
-        - block:
-            - name: "get parent mountpoint"
-              command: "zfs get -Ho value mountpoint {{ dataset_parent }}"
-              changed_when: false
-              failed_when: false
-              register: t_dataset_parent_mountpoint
-
-            - name: "set inherited mountpoint permissions"
-              file:
-                path: "{{ t_dataset_parent_mountpoint.stdout }}/{{ dataset.name }}"
-                owner: "{{ dataset.owner | d(omit) }}"
-                group: "{{ dataset.group | d(omit) }}"
-                mode: "{{ dataset.mode | d(omit) }}"
-              when:
-                - t_dataset_parent_mountpoint.rc == 0
-                - t_dataset_parent_mountpoint.stdout | regex_search('^/')
-
-          when: dataset.properties.mountpoint is not defined
+          when: t_dataset_mountpoint != ""
 
       when:
-        (t_dataset_mountpoint.skipped|d(false))
-        or (not t_dataset_mountpoint.stat.exists)
-        or (t_dataset_device.stdout == (dataset_parent + "/" + dataset.name))
+        (t_dataset_mountpoint_stat.skipped|d(false))
+        or (not t_dataset_mountpoint_stat.stat.exists)
+        or (t_dataset_current_device.stdout == (dataset_parent + "/" + dataset.name))
 
   when: dataset_parent is defined and dataset is defined
