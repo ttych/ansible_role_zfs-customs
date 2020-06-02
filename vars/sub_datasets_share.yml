@@ -16,7 +16,7 @@ sub_datasets:
     properties:
       setuid: off
       compression: "lz4"
-      sharenfs: "rw"
+      sharenfs: "on"
     owner: share
     group: share
     mode: '3777'
@@ -87,7 +87,7 @@ sub_datasets:
   - name: purge
     properties:
       compression: "lz4"
-      sharenfs: "rw"
+      sharenfs: "on"
     owner: share
     group: share
     mode: '3777'
