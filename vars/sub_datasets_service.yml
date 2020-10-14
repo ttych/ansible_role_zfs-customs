@@ -1,5 +1,5 @@
 ---
-parent_mountpoint: /services
+parent_mountpoint: /service
 
 root_pool: false
 
