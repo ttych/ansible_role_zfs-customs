@@ -1,0 +1,20 @@
+---
+parent_mountpoint: /
+
+root_pool: false
+
+sub_datasets:
+  - name:
+    properties:
+      compression: "lz4"
+      reservation: 18G
+    owner: root
+    group: 0
+    mode: '0755'
+  - name: var/log
+    properties:
+      reservation: 1G
+      quota: 10G
+    owner: root
+    group: 0
+    mode: '0755'

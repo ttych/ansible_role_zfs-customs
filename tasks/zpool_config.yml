@@ -1,4 +1,5 @@
 ---
+
 - name: "check if {{ zpool }} exists"
   shell: "zfs list {{ zpool }}"
   register: zpool_status

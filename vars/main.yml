@@ -7,3 +7,4 @@ sub_datasets:
   - share
   - root
   - service
+  - os

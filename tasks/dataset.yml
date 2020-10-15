@@ -23,7 +23,7 @@
 
         - name: set mountpoint by inheritance
           set_fact:
-            t_dataset_mountpoint: "{{ t_dataset_parent_mountpoint.stdout }}/{{ dataset.name }}"
+            t_dataset_mountpoint: "{{ [t_dataset_parent_mountpoint.stdout, dataset.name] | difference([None]) | join('/') | replace('//','/')}}"
           when:
             - t_dataset_parent_mountpoint.rc == 0
             - t_dataset_parent_mountpoint.stdout | regex_search('^/')
@@ -42,10 +42,14 @@
       register: t_dataset_current_device
       when: not (t_dataset_mountpoint_stat.skipped|d(false)) and t_dataset_mountpoint_stat.stat.exists
 
+    - name: compute target dataset
+      set_fact:
+        t_dataset: "{{ [dataset_parent, dataset.name] | difference([None]) | join('/') }}"
+
     - block:
-        - name: "create {{ dataset_parent }}/{{ dataset.name }}"
+        - name: "create {{ t_dataset }}"
           zfs:
-            name: "{{ dataset_parent }}/{{ dataset.name }}"
+            name: "{{ t_dataset }}"
             state: present
             extra_zfs_properties: "{{ dataset.properties }}"
 
@@ -55,11 +59,11 @@
             owner: "{{ dataset.owner | d(omit) }}"
             group: "{{ dataset.group | d(omit) }}"
             mode: "{{ dataset.mode | d(omit) }}"
-          when: t_dataset_mountpoint != ""
+          when: t_dataset_mountpoint is defined and t_dataset_mountpoint != ""
 
       when:
         (t_dataset_mountpoint_stat.skipped|d(false))
         or (not t_dataset_mountpoint_stat.stat.exists)
-        or (t_dataset_current_device.stdout == (dataset_parent + "/" + dataset.name))
+        or (t_dataset_current_device.stdout == t_dataset)
 
   when: dataset_parent is defined and dataset is defined
