@@ -1,2 +1,5 @@
 ---
-# defaults file for ansible_role_zfs-customs
+
+zfs_fs_root_reservation: 35G
+zfs_fs_var_log_reservation: 1G
+zfs_fs_var_log_quota: 10G

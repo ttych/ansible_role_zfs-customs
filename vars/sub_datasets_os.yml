@@ -7,14 +7,14 @@ sub_datasets:
   - name:
     properties:
       compression: "lz4"
-      reservation: 18G
+      reservation: "{{ zfs_fs_root_reservation }}"
     owner: root
     group: 0
     mode: '0755'
   - name: var/log
     properties:
-      reservation: 1G
-      quota: 10G
+      reservation: "{{ zfs_fs_var_log_reservation }}"
+      quota: "{{ zfs_fs_var_log_quota }}"
     owner: root
     group: 0
     mode: '0755'
