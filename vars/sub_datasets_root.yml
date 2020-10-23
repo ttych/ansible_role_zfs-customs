@@ -4,12 +4,12 @@ parent_mountpoint: /
 root_pool: true
 
 sub_datasets:
-  - name: services
+  - name: service
     properties:
       compression: "lz4"
       sharenfs: off
       sharesmb: off
-      mountpoint: /services
+      mountpoint: /service
     owner: root
     group: 0
     mode: '0755'
