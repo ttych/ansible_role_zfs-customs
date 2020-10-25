@@ -148,7 +148,7 @@ sub_datasets:
     owner: root
     group: 0
     mode: '0755'
-  - name: vlc
+  - name: vlcd
     properties:
       setuid: off
       compression: "lz4"
