@@ -139,3 +139,12 @@ sub_datasets:
     owner: share
     group: share
     mode: '0755'
+  - name: web
+    properties:
+      setuid: off
+      compression: "lz4"
+      sharenfs: "ro"
+    owner: share
+    group: share
+    mode: '1777'
+    quota: {{ zfs_datasets_share_web_quota }}
