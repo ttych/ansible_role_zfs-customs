@@ -146,5 +146,5 @@ sub_datasets:
       sharenfs: "ro"
     owner: share
     group: share
-    mode: '1777'
-    quota: "{{ zfs_datasets_share_web_quota }}"
+    mode: '0755'
+    quota: "{{ zfs_datasets_share_wfiles_quota }}"
