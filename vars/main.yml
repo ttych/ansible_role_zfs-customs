@@ -8,3 +8,4 @@ sub_datasets:
   - root
   - service
   - os
+  - data

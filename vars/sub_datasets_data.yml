@@ -1,0 +1,13 @@
+---
+parent_mountpoint: /data
+
+root_pool: false
+
+sub_datasets:
+  - name: me
+    properties:
+      setuid: off
+      compression: "lz4"
+      sharenfs: off
+      sharesmb: off
+    mode: '0700'
