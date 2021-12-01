@@ -148,3 +148,11 @@ sub_datasets:
     group: share
     mode: '0755'
     quota: "{{ zfs_datasets_share_wfiles_quota }}"
+  - name: sports
+    properties:
+      setuid: off
+      compression: "lz4"
+      sharenfs: "ro"
+    owner: share
+    group: share
+    mode: '0755'
