@@ -8,6 +8,11 @@
   register: parent_dataset
   changed_when: False
 
+- name: "check parent_dataset uniqueness"
+  fail:
+    msg: "parent_dataset is not unique: {{ parent_dataset.stdout }}"
+  when: (parent_dataset.stdout_lines | length) > 1
+
 - name: "get root dataset for {{ parent_dataset }}"
   shell: echo "{{ parent_dataset.stdout }}" | cut -d/ -f1
   register: root_dataset
