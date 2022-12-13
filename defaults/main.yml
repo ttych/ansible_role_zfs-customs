@@ -3,5 +3,3 @@
 zfs_fs_root_reservation: 35G
 zfs_fs_var_log_reservation: 1G
 zfs_fs_var_log_quota: 10G
-
-zfs_datasets_share_wfiles_quota: 10G
