@@ -1,7 +1,11 @@
 ---
 
-- include: zpool_config.yml zpool="{{ item }}"
+- include_tasks: zpool_config.yml
   loop: "{{ zpools }}"
+  loop_control:
+    loop_var: zpool
 
-- include: sub_datasets.yml from="{{ item }}"
+- include_tasks: sub_datasets.yml
   loop: "{{ sub_datasets }}"
+  loop_control:
+    loop_var: from

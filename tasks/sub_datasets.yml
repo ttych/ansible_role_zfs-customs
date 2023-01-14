@@ -4,7 +4,7 @@
     file: "sub_datasets_{{ from }}.yml"
 
 - name: "get associated dataset for {{ parent_mountpoint }}"
-  shell: zfs list | egrep '[[:blank:]]{{ parent_mountpoint }}$' | cut -d ' ' -f1
+  shell: zfs list -H "{{ parent_mountpoint }}" | awk '{print $1}'
   register: parent_dataset
   changed_when: False
 
@@ -23,9 +23,11 @@
     - set_fact:
         ref_dataset: "{{ root_dataset.stdout | default(parent_dataset.stdout) }}"
 
-    - include: dataset.yml dataset_parent="{{ ref_dataset }}" dataset="{{ dataset_i }}"
+    - include_tasks: dataset.yml
+      vars:
+        dataset_parent: "{{ ref_dataset }}"
       loop: "{{ sub_datasets }}"
       loop_control:
-        loop_var: dataset_i
+        loop_var: dataset
 
   when: parent_dataset.stdout != ""
