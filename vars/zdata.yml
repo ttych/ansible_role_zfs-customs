@@ -16,16 +16,6 @@ datasets:
       mountpoint: '/data'
       sharenfs: off
       sharesmb: off
-  - name: homes
-    owner: root
-    group: 0
-    mode: '0555'
-    properties:
-      compression: 'lz4'
-      mountpoint: '/homes'
-      sharenfs: off
-      sharesmb: off
-      setuid: off
   - name: share
     owner: root
     group: 0
@@ -33,6 +23,16 @@ datasets:
     properties:
       compression: 'lz4'
       mountpoint: '/share'
+      sharenfs: off
+      sharesmb: off
+      setuid: off
+  - name: backup
+    owner: root
+    group: 0
+    mode: '0555'
+    properties:
+      compression: 'lz4'
+      mountpoint: '/backup'
       sharenfs: off
       sharesmb: off
       setuid: off

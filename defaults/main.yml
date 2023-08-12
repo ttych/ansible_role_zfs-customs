@@ -3,3 +3,15 @@
 zfs_fs_root_reservation: 35G
 zfs_fs_var_log_reservation: 1G
 zfs_fs_var_log_quota: 10G
+
+zpools:
+  - zdata
+  - zhome
+
+sub_datasets:
+  - share
+  - root
+  - service
+  - os
+  - data
+  - backup
